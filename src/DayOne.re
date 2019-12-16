@@ -101,6 +101,8 @@ let input = [|
   123172,
 |];
 
+// https://adventofcode.com/2019/day/1
+
 let calcFuelReq = m => {
   let m2 = m / 3;
   let roundedM = floor(float_of_int(m2));
