@@ -1,4 +1,6 @@
 open Jest;
+open Expect;
+open DayOne;
 
 /*
  For example:
@@ -9,10 +11,7 @@ open Jest;
  For a mass of 100756, the fuel required is 33583.
   */
 
-describe("Day One", () => {
-  open Expect;
-  open DayOne;
-
+describe("Day One - Part One", () => {
   test("Example One", () =>
     expect(calcFuelReq(12)) |> toBe(2)
   );
@@ -27,5 +26,20 @@ describe("Day One", () => {
 
   test("Example Four", () =>
     expect(calcFuelReq(100756)) |> toBe(33583)
+  );
+});
+
+describe("Day One - Part Two", () => {
+  test("Example One", () =>
+    expect(calcFuelReqRecursive(12)) |> toBe(2)
+  );
+  test("Example Two", () =>
+    expect(calcFuelReqRecursive(14)) |> toBe(2)
+  );
+  test("Example Three", () =>
+    expect(calcFuelReqRecursive(1969)) |> toBe(966)
+  );
+  test("Example Four", () =>
+    expect(calcFuelReqRecursive(100756)) |> toBe(50346)
   );
 });

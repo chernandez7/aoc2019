@@ -107,11 +107,28 @@ let calcFuelReq = m => {
   int_of_float(roundedM) - 2;
 };
 
+let calcFuelReqRecursive = m => {
+  let totalCost = ref(0);
+  let cost = ref(calcFuelReq(m));
+  totalCost := totalCost^ + calcFuelReq(m);
+
+  while (calcFuelReq(cost.contents) > 0) {
+    totalCost := totalCost^ + calcFuelReq(cost.contents);
+    cost := calcFuelReq(cost.contents);
+  };
+  totalCost.contents;
+};
+
 let sum = ref(0);
 
 Array.map(
   i => {
-    sum := sum^ + calcFuelReq(i);
+    // Part one answer
+    // sum := sum^ + calcFuelReq(i);
+
+    // Part two answer
+    sum := sum^ + calcFuelReqRecursive(i);
+
     ();
   },
   input,
