@@ -123,10 +123,10 @@ let sum = ref(0);
 
 Array.map(
   i => {
-    // Part one answer
+    // Uncomment for part one answer (but not both)
     // sum := sum^ + calcFuelReq(i);
 
-    // Part two answer
+    // Uncomment for part two answer (but not both)
     sum := sum^ + calcFuelReqRecursive(i);
 
     ();

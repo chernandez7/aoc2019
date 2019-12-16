@@ -1,18 +1,5 @@
-# Basic Reason Template
+# Advent of Code 2019 in ReasonML
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+- Testing done with `@glennsl/bs-jest`
 
-# Build
-```
-npm run build
-```
-
-# Build + Watch
-
-```
-npm run start
-```
-
-
-# Editor
-If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+[Link](https://adventofcode.com/2019)
