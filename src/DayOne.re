@@ -136,4 +136,5 @@ Array.map(
   input,
 );
 
-Js.log(sum.contents);
+// Answer
+// Js.log(sum.contents);
