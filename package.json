@@ -2,6 +2,7 @@
   "name": "aoc-2019",
   "version": "0.1.0",
   "scripts": {
+    "build": "bsb -make-world",
     "start": "bsb -make-world -w",
     "test": "jest --verbose",
     "test:watch": "jest --watch"
