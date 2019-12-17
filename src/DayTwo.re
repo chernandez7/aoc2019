@@ -220,4 +220,7 @@ let generateFinalIntcode = intcode => {
   tempIntcode.contents;
 };
 
+// Uncomment for part one answer
 // Js.log(generateFinalIntcode(input)[0]);
+
+// Part two answer in tests

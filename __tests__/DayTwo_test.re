@@ -31,3 +31,19 @@ describe("Day Two - Part One", () => {
     |> toEqual([|30, 1, 1, 4, 2, 5, 6, 0, 99|]);
   });
 });
+
+describe("Day Two - Part Two", () => {
+  test("Example One", () => {
+    let noun = 59;
+    let verb = 36;
+
+    let testingInput = ref(input);
+
+    testingInput.contents[1] = noun;
+    testingInput.contents[2] = verb;
+
+    let result = generateFinalIntcode(testingInput.contents);
+
+    expect(result[0]) |> toEqual(19690720);
+  })
+});
