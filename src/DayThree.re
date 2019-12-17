@@ -22,77 +22,91 @@ let parseInput = input => {
 let getValueFromStep = (step, direction) =>
   int_of_string(Array.of_list(String.split_on_char(direction, step))[1]);
 
-let getArrayBounds = (~array) => {
-  let high = ref(0);
-  let low = ref(0);
-  let left = ref(0);
-  let right = ref(0);
+let simulatePath = (~path) => {
+  let x = ref(0);
+  let y = ref(0);
+  let visitedPoints = ref([||]);
 
   Array.map(
     step => {
       if (String.contains(step, 'U')) {
-        high := high^ + getValueFromStep(step, 'U');
+        for (coord in y.contents to y.contents + getValueFromStep(step, 'U')) {
+          visitedPoints :=
+            Array.append(
+              visitedPoints.contents,
+              [|{x: x.contents, y: coord}|],
+            );
+        };
+        y := y^ + getValueFromStep(step, 'U');
       };
 
       if (String.contains(step, 'D')) {
-        low := low^ + getValueFromStep(step, 'D');
+        for (coord in y.contents to y.contents - getValueFromStep(step, 'D')) {
+          visitedPoints :=
+            Array.append(
+              visitedPoints.contents,
+              [|{x: x.contents, y: coord}|],
+            );
+        };
+        y := y^ - getValueFromStep(step, 'D');
       };
 
       if (String.contains(step, 'L')) {
-        left := left^ + getValueFromStep(step, 'L');
+        for (coord in x.contents to x.contents - getValueFromStep(step, 'L')) {
+          visitedPoints :=
+            Array.append(
+              visitedPoints.contents,
+              [|{x: coord, y: y.contents}|],
+            );
+        };
+        x := x^ - getValueFromStep(step, 'L');
       };
 
       if (String.contains(step, 'R')) {
-        right := right^ + getValueFromStep(step, 'R');
+        for (coord in x.contents to x.contents + getValueFromStep(step, 'R')) {
+          visitedPoints :=
+            Array.append(
+              visitedPoints.contents,
+              [|{x: coord, y: y.contents}|],
+            );
+        };
+        x := x^ + getValueFromStep(step, 'R');
       };
-      ();
     },
-    array,
+    path,
   );
 
-  (high.contents, low.contents, left.contents, right.contents);
+  visitedPoints.contents;
 };
 
-let calcTotalBounds = (~first, ~second) => {
-  let high = ref(0);
-  let low = ref(0);
-  let left = ref(0);
-  let right = ref(0);
+let findIntersections = (~first, ~second) => {
+  let intersections = ref([||]);
 
-  let (firstHigh, firstLow, firstLeft, firstRight) =
-    getArrayBounds(~array=first);
-  let (secondHigh, secondLow, secondLeft, secondRight) =
-    getArrayBounds(~array=second);
+  for (firstCoord in 0 to Array.length(first) - 1) {
+    for (secondCoord in 0 to Array.length(second) - 1) {
+      if (first[firstCoord] == second[secondCoord]) {
+        // TODO: Can ignore duplicate entries
+        intersections :=
+          Array.append(
+            intersections.contents,
+            [|{x: first[firstCoord].x, y: first[firstCoord].y}|],
+          );
+      };
+    };
+  };
 
-  high := high^ + firstHigh + secondHigh;
-  low := low^ + firstLow + secondLow;
-  left := left^ + firstLeft + secondLeft;
-  right := right^ + firstRight + secondRight;
-
-  (high.contents, low.contents, left.contents, right.contents);
-};
-
-let createInitialGrid = (~high, ~low, ~left, ~right) => {
-  let grid = [||];
-
-  // TODO: Generate left and right from origin.
-  // TODO: Generate high and low from origin.
-
-  // Should end up with 2D array grid.
-  // . => empty space
-  // + => end of step?
-  // X => intersection
-  // o => origin
-  // | => vertical path
-  // - => horizontal path
-  grid;
+  intersections.contents;
 };
 
 let getClosestDistance = lines => {
   let (first, second) = parseInput(lines);
-  let (high, low, left, right) = calcTotalBounds(~first, ~second);
 
-  let grid = createInitialGrid(~high, ~low, ~left, ~right);
+  let firstVisitedPoints = simulatePath(~path=first);
+  let secondVisitedPoints = simulatePath(~path=second);
+
+  let collisions =
+    findIntersections(~first=firstVisitedPoints, ~second=secondVisitedPoints);
+  Js.log(collisions);
 
   1;
 };
