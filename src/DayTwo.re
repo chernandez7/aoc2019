@@ -1,7 +1,7 @@
 let input = [|
   1,
-  0,
-  0,
+  12,
+  2,
   3,
   1,
   1,
@@ -164,10 +164,60 @@ let input = [|
   14,
   0,
   0,
-|] /* Once done, move over 4 position*/;
+|];
 
 // Intcode (1,0,0,3,99)
-
 // First position: 1 (Add two, store in third), 2 (Multiply two, store in third), 99 (Halt)
+// Then move over 4
 
-let generateFinalIntcode = intcode => intcode;
+let updateIntcode = (~rootIndex, ~intcode, ~isAdd) => {
+  let tempIntcode = ref(intcode);
+  let value = ref(0);
+
+  let one = rootIndex + 1;
+  let two = rootIndex + 2;
+  let storeIndex = rootIndex + 3;
+
+  if (isAdd) {
+    value :=
+      tempIntcode.contents[tempIntcode.contents[one]]
+      + tempIntcode.contents[tempIntcode.contents[two]];
+  } else {
+    value :=
+      tempIntcode.contents[tempIntcode.contents[one]]
+      * tempIntcode.contents[tempIntcode.contents[two]];
+  };
+
+  tempIntcode.contents[tempIntcode.contents[storeIndex]] = value.contents;
+
+  tempIntcode.contents;
+};
+
+let generateFinalIntcode = intcode => {
+  let index = ref(0);
+  let tempIntcode = ref(intcode);
+
+  while (tempIntcode.contents[index.contents] !== 99) {
+    switch (tempIntcode.contents[index.contents]) {
+    | 1 =>
+      tempIntcode :=
+        updateIntcode(
+          ~rootIndex=index.contents,
+          ~intcode=tempIntcode.contents,
+          ~isAdd=true,
+        )
+    | 2 =>
+      tempIntcode :=
+        updateIntcode(
+          ~rootIndex=index.contents,
+          ~intcode=tempIntcode.contents,
+          ~isAdd=false,
+        )
+    | _ => ()
+    };
+    index := index^ + 4;
+  };
+  tempIntcode.contents;
+};
+
+// Js.log(generateFinalIntcode(input)[0]);
