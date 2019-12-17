@@ -45,6 +45,7 @@ let getArrayBounds = (~array) => {
       if (String.contains(step, 'R')) {
         right := right^ + getValueFromStep(step, 'R');
       };
+      ();
     },
     array,
   );
@@ -74,6 +75,16 @@ let calcTotalBounds = (~first, ~second) => {
 let createInitialGrid = (~high, ~low, ~left, ~right) => {
   let grid = [||];
 
+  // TODO: Generate left and right from origin.
+  // TODO: Generate high and low from origin.
+
+  // Should end up with 2D array grid.
+  // . => empty space
+  // + => end of step?
+  // X => intersection
+  // o => origin
+  // | => vertical path
+  // - => horizontal path
   grid;
 };
 
@@ -81,7 +92,7 @@ let getClosestDistance = lines => {
   let (first, second) = parseInput(lines);
   let (high, low, left, right) = calcTotalBounds(~first, ~second);
 
-  createInitialGrid(~high, ~low, ~left, ~right);
+  let grid = createInitialGrid(~high, ~low, ~left, ~right);
 
   1;
 };
