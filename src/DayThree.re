@@ -22,75 +22,84 @@ let parseInput = input => {
 let getValueFromStep = (step, direction) =>
   int_of_string(Array.of_list(String.split_on_char(direction, step))[1]);
 
+let combineArrays = (~source, ~addition) => {
+  let tempArray = ref(source);
+
+  tempArray := Array.append(tempArray.contents, [|addition|]);
+
+  tempArray.contents;
+};
+
 let simulatePath = (~path) => {
   let x = ref(0);
   let y = ref(0);
   let visitedPoints = ref([||]);
 
-  Array.map(
-    step => {
-      if (String.contains(step, 'U')) {
-        for (coord in y.contents to y.contents + getValueFromStep(step, 'U')) {
-          visitedPoints :=
-            Array.append(
-              visitedPoints.contents,
-              [|{x: x.contents, y: coord}|],
-            );
-        };
-        y := y^ + getValueFromStep(step, 'U');
+  for (stepIndex in 0 to Array.length(path) - 1) {
+    let step = path[stepIndex];
+    if (String.contains(step, 'U')) {
+      let stepValue = getValueFromStep(step, 'U');
+      for (coord in y.contents to y.contents + stepValue) {
+        visitedPoints :=
+          combineArrays(
+            ~source=visitedPoints.contents,
+            ~addition={x: x.contents, y: coord},
+          );
       };
+      y := y^ + stepValue;
+    } else if (String.contains(step, 'D')) {
+      let stepValue = - getValueFromStep(step, 'D');
+      for (coord in y.contents downto y.contents + stepValue) {
+        visitedPoints :=
+          combineArrays(
+            ~source=visitedPoints.contents,
+            ~addition={x: x.contents, y: coord},
+          );
+      };
+      y := y^ + stepValue;
+    } else if (String.contains(step, 'L')) {
+      let stepValue = - getValueFromStep(step, 'L');
 
-      if (String.contains(step, 'D')) {
-        for (coord in y.contents to y.contents - getValueFromStep(step, 'D')) {
-          visitedPoints :=
-            Array.append(
-              visitedPoints.contents,
-              [|{x: x.contents, y: coord}|],
-            );
-        };
-        y := y^ - getValueFromStep(step, 'D');
+      for (coord in x.contents downto x.contents + stepValue) {
+        visitedPoints :=
+          combineArrays(
+            ~source=visitedPoints.contents,
+            ~addition={x: coord, y: y.contents},
+          );
       };
-
-      if (String.contains(step, 'L')) {
-        for (coord in x.contents to x.contents - getValueFromStep(step, 'L')) {
-          visitedPoints :=
-            Array.append(
-              visitedPoints.contents,
-              [|{x: coord, y: y.contents}|],
-            );
-        };
-        x := x^ - getValueFromStep(step, 'L');
+      x := x^ + stepValue;
+    } else if (String.contains(step, 'R')) {
+      let stepValue = getValueFromStep(step, 'R');
+      for (coord in x.contents to x.contents + stepValue) {
+        visitedPoints :=
+          combineArrays(
+            ~source=visitedPoints.contents,
+            ~addition={x: coord, y: y.contents},
+          );
       };
-
-      if (String.contains(step, 'R')) {
-        for (coord in x.contents to x.contents + getValueFromStep(step, 'R')) {
-          visitedPoints :=
-            Array.append(
-              visitedPoints.contents,
-              [|{x: coord, y: y.contents}|],
-            );
-        };
-        x := x^ + getValueFromStep(step, 'R');
-      };
-    },
-    path,
-  );
+      x := x^ + stepValue;
+    } else {
+      Js.log("ignore");
+    };
+  };
 
   visitedPoints.contents;
 };
 
 let findIntersections = (~first, ~second) => {
   let intersections = ref([||]);
+  let origin = {x: 0, y: 0};
 
   for (firstCoord in 0 to Array.length(first) - 1) {
     for (secondCoord in 0 to Array.length(second) - 1) {
       if (first[firstCoord] == second[secondCoord]) {
-        // TODO: Can ignore duplicate entries
-        intersections :=
-          Array.append(
-            intersections.contents,
-            [|{x: first[firstCoord].x, y: first[firstCoord].y}|],
-          );
+        if (first[firstCoord] != origin) {
+          intersections :=
+            Array.append(
+              intersections.contents,
+              [|{x: first[firstCoord].x, y: first[firstCoord].y}|],
+            );
+        };
       };
     };
   };
@@ -101,35 +110,28 @@ let findIntersections = (~first, ~second) => {
 let getShortestManhattanDist = (~collisions) => {
   let distances = ref([||]);
 
-  let origin = {x: 0, y: 0};
-
-  for (index in 0 to Array.length(collisions) - 1) {
-    if (collisions[index] != origin) {
-      Js.log(collisions[index]);
-
-      let verticalDist = abs(collisions[index].y) - origin.y;
-      Js.log(verticalDist);
-
-      let horizontalDist = abs(collisions[index].x) - origin.x;
-      Js.log(horizontalDist);
-
+  if (Array.length(collisions) > 0) {
+    for (index in 0 to Array.length(collisions) - 1) {
+      let verticalDist = abs(collisions[index].y);
+      let horizontalDist = abs(collisions[index].x);
       let finalDist = abs(verticalDist + horizontalDist);
-      Js.log(finalDist);
 
       distances := Array.append(distances.contents, [|finalDist|]);
     };
+
+    Array.sort(Pervasives.compare, distances.contents);
+
+    distances.contents[0];
+  } else {
+    (-1);
   };
-
-  Js.log(distances);
-  // let sortedDistances = Array.fast_sort((x, x) => x, distances.contents);
-
-  distances.contents[0];
 };
 
 let getClosestDistance = lines => {
   let (first, second) = parseInput(lines);
 
   let firstVisitedPoints = simulatePath(~path=first);
+
   let secondVisitedPoints = simulatePath(~path=second);
 
   let collisions =
