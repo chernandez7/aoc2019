@@ -98,6 +98,34 @@ let findIntersections = (~first, ~second) => {
   intersections.contents;
 };
 
+let getShortestManhattanDist = (~collisions) => {
+  let distances = ref([||]);
+
+  let origin = {x: 0, y: 0};
+
+  for (index in 0 to Array.length(collisions) - 1) {
+    if (collisions[index] != origin) {
+      Js.log(collisions[index]);
+
+      let verticalDist = abs(collisions[index].y) - origin.y;
+      Js.log(verticalDist);
+
+      let horizontalDist = abs(collisions[index].x) - origin.x;
+      Js.log(horizontalDist);
+
+      let finalDist = abs(verticalDist + horizontalDist);
+      Js.log(finalDist);
+
+      distances := Array.append(distances.contents, [|finalDist|]);
+    };
+  };
+
+  Js.log(distances);
+  // let sortedDistances = Array.fast_sort((x, x) => x, distances.contents);
+
+  distances.contents[0];
+};
+
 let getClosestDistance = lines => {
   let (first, second) = parseInput(lines);
 
@@ -106,7 +134,6 @@ let getClosestDistance = lines => {
 
   let collisions =
     findIntersections(~first=firstVisitedPoints, ~second=secondVisitedPoints);
-  Js.log(collisions);
 
-  1;
+  getShortestManhattanDist(~collisions);
 };
