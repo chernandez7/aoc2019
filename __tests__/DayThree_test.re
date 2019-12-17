@@ -15,7 +15,7 @@ U62,R66,U55,R34,D71,R55,D58,R83";
 
   test("getting proper high and low for grid", () => {
     let result =
-      calcHighAndLow(
+      calcTotalBounds(
         ~first=[|
           "R75",
           "D30",
@@ -29,7 +29,7 @@ U62,R66,U55,R34,D71,R55,D58,R83";
         |],
         ~second=[|"U62", "R66", "U55", "R34", "D71", "R55", "D58", "R83"|],
       );
-    expect(result) |> toEqual((207, 208));
+    expect(result) |> toEqual((207, 208, 84, 467));
   });
   /*test("Example One", () => {
         let ex = "R75,D30,R83,U83,L12,D49,R71,U7,L72

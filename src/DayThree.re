@@ -19,16 +19,69 @@ let parseInput = input => {
   (parsedFirstLine, parsedSecondLine);
 };
 
-let calcHighAndLow = (~first, ~second) => {
-  (1, 2);
+let getValueFromStep = (step, direction) =>
+  int_of_string(Array.of_list(String.split_on_char(direction, step))[1]);
+
+let getArrayBounds = (~array) => {
+  let high = ref(0);
+  let low = ref(0);
+  let left = ref(0);
+  let right = ref(0);
+
+  Array.map(
+    step => {
+      if (String.contains(step, 'U')) {
+        high := high^ + getValueFromStep(step, 'U');
+      };
+
+      if (String.contains(step, 'D')) {
+        low := low^ + getValueFromStep(step, 'D');
+      };
+
+      if (String.contains(step, 'L')) {
+        left := left^ + getValueFromStep(step, 'L');
+      };
+
+      if (String.contains(step, 'R')) {
+        right := right^ + getValueFromStep(step, 'R');
+      };
+    },
+    array,
+  );
+
+  (high.contents, low.contents, left.contents, right.contents);
+};
+
+let calcTotalBounds = (~first, ~second) => {
+  let high = ref(0);
+  let low = ref(0);
+  let left = ref(0);
+  let right = ref(0);
+
+  let (firstHigh, firstLow, firstLeft, firstRight) =
+    getArrayBounds(~array=first);
+  let (secondHigh, secondLow, secondLeft, secondRight) =
+    getArrayBounds(~array=second);
+
+  high := high^ + firstHigh + secondHigh;
+  low := low^ + firstLow + secondLow;
+  left := left^ + firstLeft + secondLeft;
+  right := right^ + firstRight + secondRight;
+
+  (high.contents, low.contents, left.contents, right.contents);
+};
+
+let createInitialGrid = (~high, ~low, ~left, ~right) => {
+  let grid = [||];
+
+  grid;
 };
 
 let getClosestDistance = lines => {
-  let center = {x: 0, y: 0};
-  let grid = [|[|"."|], [|"."|], [|"."|], [|"."|], [|"o"|]|];
   let (first, second) = parseInput(lines);
+  let (high, low, left, right) = calcTotalBounds(~first, ~second);
 
-  let (high, low) = calcHighAndLow(~first, ~second);
+  createInitialGrid(~high, ~low, ~left, ~right);
 
   1;
 };
