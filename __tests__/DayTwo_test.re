@@ -37,7 +37,7 @@ describe("Day Two - Part Two", () => {
     let noun = 59;
     let verb = 36;
 
-    let testingInput = ref(input);
+    let testingInput = ref(DayTwo.input);
 
     testingInput.contents[1] = noun;
     testingInput.contents[2] = verb;
