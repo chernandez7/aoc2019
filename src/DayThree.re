@@ -119,7 +119,7 @@ let getShortestManhattanDist = (~collisions) => {
       distances := Array.append(distances.contents, [|finalDist|]);
     };
 
-    Array.sort(Pervasives.compare, distances.contents);
+    Array.fast_sort(Pervasives.compare, distances.contents);
 
     distances.contents[0];
   } else {
@@ -139,3 +139,6 @@ let getClosestDistance = lines => {
 
   getShortestManhattanDist(~collisions);
 };
+
+// Uncomment for part one answer
+// getClosestDistance(input);
