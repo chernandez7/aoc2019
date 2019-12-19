@@ -101,8 +101,6 @@ let input = [|
   123172,
 |];
 
-// https://adventofcode.com/2019/day/1
-
 let calcFuelReq = m => {
   let m2 = m / 3;
   let roundedM = floor(float_of_int(m2));
@@ -121,20 +119,22 @@ let calcFuelReqRecursive = m => {
   totalCost.contents;
 };
 
-let sum = ref(0);
+/*
+ let sum = ref(0);
 
-Array.map(
-  i => {
-    // Uncomment for part one answer (but not both)
-    // sum := sum^ + calcFuelReq(i);
+ Array.map(
+   i => {
+     // Uncomment for part one answer (but not both)
+     // sum := sum^ + calcFuelReq(i);
 
-    // Uncomment for part two answer (but not both)
-    sum := sum^ + calcFuelReqRecursive(i);
+     // Uncomment for part two answer (but not both)
+     sum := sum^ + calcFuelReqRecursive(i);
 
-    ();
-  },
-  input,
-);
+     ();
+   },
+   input,
+ );
 
-// Answer
-// Js.log(sum.contents);
+ // Answer
+ // Js.log(sum.contents);
+  */
